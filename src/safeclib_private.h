@@ -304,7 +304,7 @@ typedef unsigned long uintptr_t;
     if (unlikely(dmax != destbos)) {                                           \
         if (unlikely(dmax > destbos)) {                                        \
             if (dmax > RSIZE_MAX_STR) {                                        \
-                handle_error(dest, destbos, func ": dmax exceeds max",         \
+              handle_error((char*)dest, destbos, func ": dmax exceeds max",    \
                              ESLEMAX);                                         \
                 return RCNEGATE(ESLEMAX);                                      \
             } else {                                                           \
@@ -400,7 +400,7 @@ typedef unsigned long uintptr_t;
 #define CHK_DEST_OVR_CLEAR(func, destbos)                                      \
     if (unlikely(dmax > destbos)) {                                            \
         if (dmax > RSIZE_MAX_STR) {                                            \
-            handle_error(dest, destbos, func ": dmax exceeds max", ESLEMAX);   \
+            handle_error((char*)dest, destbos, func ": dmax exceeds max", ESLEMAX); \
             return RCNEGATE(ESLEMAX);                                          \
         } else {                                                               \
             return handle_str_bos_overload(func ": dmax exceeds dest",         \
@@ -475,7 +475,7 @@ typedef unsigned long uintptr_t;
     }
 #define CHK_SRC_NULL_CLEAR(func, src)                                          \
     if (unlikely(src == NULL)) {                                               \
-        handle_error(dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax,                \
+        handle_error((char*)dest, _BOS_KNOWN(dest) ? BOS(dest) : dmax,         \
                      func ": " _XSTR(src) " is null", ESNULLP);                \
         return RCNEGATE(ESNULLP);                                              \
     }
@@ -523,7 +523,7 @@ typedef unsigned long uintptr_t;
 #endif
 #define CHK_SLEN_MAX_CLEAR(func, slen, max)                                    \
     if (unlikely(slen > (max))) {                                              \
-        handle_error(dest,                                                     \
+        handle_error((char*)dest,                                              \
                      _BOS_KNOWN(dest) ? BOS(dest) : strnlen_s(dest, dmax),     \
                      func ": " _XSTR(slen) " exceeds max", ESLEMAX);           \
         return RCNEGATE(ESLEMAX);                                              \
@@ -531,8 +531,8 @@ typedef unsigned long uintptr_t;
 #define CHK_SLEN_MAX_NOSPC_CLEAR(func, slen, max)                              \
     if (unlikely(slen > dmax)) {                                               \
         errno_t error = slen > max ? ESLEMAX : ESNOSPC;                        \
-        handle_error(dest,                                                     \
-                     _BOS_KNOWN(dest) ? BOS(dest) : strnlen_s(dest, dmax),     \
+        handle_error((char*)dest,                                              \
+                     _BOS_KNOWN(dest) ? BOS(dest) : strnlen_s((char*)dest, dmax), \
                      func ": " _XSTR(slen) " exceeds max", error);             \
         return RCNEGATE(error);                                                \
     }
@@ -638,7 +638,7 @@ EXTERN int _decomp_s(wchar_t *restrict dest, rsize_t dmax, const uint32_t cp,
 
 #ifdef SAFECLIB_ENABLE_U8
 /* from u8norm_s.c */
-EXTERN int _u8decomp_s(char *restrict dest, rsize_t dmax, const uint32_t cp,
+EXTERN int _u8decomp_s(char8_t *restrict dest, rsize_t dmax, const uint32_t cp,
                        const bool iscompat);
 #endif
 
