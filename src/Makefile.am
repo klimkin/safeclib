@@ -207,7 +207,9 @@ EXT_U8_FILES = \
 	extu8/u8cpy_s.c        \
 	extu8/u8icpy_s.c       \
 	extu8/u8ncpy_s.c       \
-	extu8/u8nlen_s.c
+	extu8/u8nlen_s.c       \
+	extu8/u8gbreaks.h      \
+	extu8/u8glen_s.c
 
 if ENABLE_WCHAR
 EXT_U8_FILES += \
@@ -260,7 +262,7 @@ ALL_SRC_FILES =
 
 PERL = @PERL@
 if ENABLE_U8
-EXTRA_DIST = extu8/gen-u8scripts.pl
+EXTRA_DIST = extu8/gen-u8scripts.pl extu8/gen-u8gbreaks.pl
 endif
 
 # Not all the code can support -Werror yet so we specifically enable it
@@ -337,6 +339,8 @@ libsafec_@SAFEC_API_VERSION@_la_LDFLAGS = \
 if ENABLE_U8
 extu8/u8scripts.h: extu8/gen-u8scripts.pl Scripts.txt
 	$(PERL) extu8/gen-u8scripts.pl
+extu8/u8gbreaks.h: extu8/gen-u8gbreaks.pl GraphemeBreakProperty.txt
+	$(PERL) extu8/gen-u8gbreaks.pl
 endif
 
 # emacs flymake-mode
@@ -362,7 +366,7 @@ endif
 CLEANFILES   = */*~ *~ *.i $(EXPORT_SYM)
 CLEANFILES  += */*.gcno */*.gcda *.gcno *.gcda
 if ENABLE_U8
-DISTCLEANFILES = Scripts.txt
+DISTCLEANFILES = Scripts.txt GraphemeBreakProperty.txt
 endif
 if ENABLE_GCOV
 CLEANFILES  += */*.gcov *.gcov gcov.log
